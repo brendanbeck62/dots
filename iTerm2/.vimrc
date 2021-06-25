@@ -54,5 +54,15 @@ set mouse=a
 set belloff=all
 
 "iTerm colors
-"set termguicolors
+set termguicolors
 
+
+" Key mappings:
+" Move to beginning/end of line without taking my fingers off of home row:
+
+nnoremap H ^
+nnoremap L $
+
+" Insert line above cursor and move cursor to that line at correct indent while staying in insert mode
+
+inoremap <silent><c-o> <esc>O
