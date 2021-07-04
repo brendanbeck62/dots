@@ -119,3 +119,5 @@ nnoremap L $
 
 " Insert line above cursor and move cursor to that line at correct indent while staying in insert mode (Control + O in insert mode)
 inoremap <silent><c-o> <esc>O
+
+
