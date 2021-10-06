@@ -100,3 +100,10 @@ fi
 # hides the warning for the terminal
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# ======================================
+# bat - cat syntax highlighting
+# https://github.com/sharkdp/bat
+alias cat='bat'
+
+# use bat to color manpages 
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
