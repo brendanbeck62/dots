@@ -51,6 +51,7 @@ set mat=2
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
+set belloff=all
 set t_vb=
 set tm=500
 
@@ -119,5 +120,9 @@ nnoremap L $
 
 " Insert line above cursor and move cursor to that line at correct indent while staying in insert mode (Control + O in insert mode)
 inoremap <silent><c-o> <esc>O
+
+" hitting escape clears search highlighting
+nnoremap <silent> <esc> :noh<cr><esc>
+
 
 
