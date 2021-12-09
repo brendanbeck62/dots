@@ -70,6 +70,9 @@ set mouse=a
 " Turn on syntax highlighting
 syntax on
 
+" Highlight searches in light grey
+hi Search ctermbg=LightGrey
+
 " Encoding
 set encoding=utf-8
 
@@ -91,6 +94,8 @@ set wrap
 set textwidth=79
 set noshiftround
 
+set listchars=tab:▸\ ,trail:·
+set list
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
