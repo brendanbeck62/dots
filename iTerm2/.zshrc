@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/BBec23/.oh-my-zsh"
+export ZSH="/Users/${USER}/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
