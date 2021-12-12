@@ -13,7 +13,6 @@ export ZSH="/Users/${USER}/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="false"
 
 # Which plugins would you like to load?
@@ -31,7 +30,7 @@ source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # For a full list of active aliases, run `alias`.
 
-alias ls='exa -l --icons --group-directories-first'
+alias ls='exa --icons --group-directories-first'
 alias ll='exa -la --icons --group-directories-first'
 
 function cdl() {
@@ -41,7 +40,7 @@ function cdl() {
 alias find='find . -iname'
 
 alias gs='git status'
-
+alias gcm='git commit -m'
 alias cat='bat'
 
 # separate historys in each tab of iterm
