@@ -76,6 +76,12 @@ syntax on
 " Highlight searches in light grey
 hi Search ctermbg=LightGrey
 
+" Vim diff colors
+highlight DiffAdd term=reverse cterm=bold ctermbg=darkgreen ctermfg=black
+highlight DiffChange term=reverse cterm=bold ctermbg=darkcyan ctermfg=black
+highlight DiffText term=reverse cterm=bold ctermbg=gray ctermfg=white
+highlight DiffDelete term=reverse cterm=bold ctermbg=darkred ctermfg=black
+
 " Encoding
 set encoding=utf-8
 
