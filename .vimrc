@@ -97,14 +97,23 @@ set smarttab
 set tabstop=2
 set shiftwidth=2
 set softtabstop=2
+set noshiftround " round indent to multiple of 'shiftwidth'
+
+set autoindent
 
 " Wrap lines
 set wrap
-set textwidth=79
-set noshiftround
+" set textwidth=79
 
+" Highlight trailing whitespace
 set listchars=tab:▸\ ,trail:·
 set list
+
+" Function to remove trailing whitespace
+function Trimws()
+  %s/\s\+$//e
+endfunction
+command Trim call Trimws()
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
@@ -113,6 +122,10 @@ set list
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
+
+" Reselects the selection after indent or dedent
+:vnoremap < <gv
+:vnoremap > >gv
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Moving around, tabs, windows and buffers
