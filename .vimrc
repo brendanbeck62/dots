@@ -1,5 +1,5 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
+" Maintainer:
 "       Brendan Beck - @brendanbeck62
 "
 " Sections:
@@ -114,6 +114,7 @@ function Trimws()
   %s/\s\+$//e
 endfunction
 command Trim call Trimws()
+command Trimw call Trimws() | w
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
@@ -147,6 +148,10 @@ nnoremap L $
 
 " Insert line above cursor and move cursor to that line at correct indent while staying in insert mode (Control + O in insert mode)
 inoremap <silent><c-o> <esc>O
+
+" Ctrl + i inserts a single character from regular mode, staying in regular mode
+" Similar to rX, which replaces the current char with X
+nnoremap <C-i> i_<Esc>r
 
 " hitting escape clears search highlighting
 " nnoremap <silent> <esc> :noh<cr><esc>
