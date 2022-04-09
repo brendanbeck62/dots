@@ -61,6 +61,13 @@ set relativenumber
 set number
 set rnu
 
+" Funtion to toggle line numbers for copying text
+function CopyToggle()
+  set rnu!
+  set number!
+endfunction
+command Copy call CopyToggle()
+
 " Mouse scrolling
 set mouse=a
 set scrolloff=8
