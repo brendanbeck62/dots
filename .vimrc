@@ -1,5 +1,5 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer:
+" Maintainer: 
 "       Brendan Beck - @brendanbeck62
 "
 " Sections:
@@ -11,7 +11,7 @@
 "    -> Moving around, tabs and buffers
 "    -> Status line
 "    -> Editing mappings
-"    -> vimgrep searching and cope displaying
+"    -> Difftool
 "    -> Misc
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -61,7 +61,7 @@ set relativenumber
 set number
 set rnu
 
-" Funtion to toggle line numbers for copying text
+" Function to toggle line numbers for copying text
 function CopyToggle()
   set rnu!
   set number!
@@ -92,6 +92,16 @@ highlight DiffDelete term=reverse cterm=bold ctermbg=darkred ctermfg=black
 " Encoding
 set encoding=utf-8
 
+" Syntax highlight file associations
+au BufNewFile,BufRead Vagrantfile set filetype=ruby
+au BufNewFile,BufRead *.erb set filetype=eruby
+au BufNewFile,BufRead *.pp set filetype=puppet " syntax file located in ~/.vim/syntax/puppet.vim
+au BufNewFile,BufRead Jenkinsfile* set filetype=groovy
+au BufNewFile,BufRead *.tf,*.hcl,*.tfvars set filetype=hcl
+au BufNewFile,BufRead *.tfstate set filetype=json
+
+" Fixes a problem with groovy syntax highlighting?
+set re=0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -101,10 +111,14 @@ set expandtab
 set smarttab
 
 " 1 tab == 2 spaces
-set tabstop=2
-set shiftwidth=2
-set softtabstop=2
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
 set noshiftround " round indent to multiple of 'shiftwidth'
+
+# Terraform tabs are 2 spaces
+autocmd Filetype hcl setlocal tabstop=2 shiftwidth=2 softtabstop=2
+
 
 set autoindent
 
@@ -129,7 +143,6 @@ command Trimw call Trimws() | w
 " Visual mode pressing * or # searches for the current selection
 " Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-vnoremap <silent> # :<C-u>call VisualSelection('', '')<CR>?<C-R>=@/<CR><CR>
 
 " Reselects the selection after indent or dedent
 :vnoremap < <gv
@@ -156,12 +169,30 @@ nnoremap L $
 " Insert line above cursor and move cursor to that line at correct indent while staying in insert mode (Control + O in insert mode)
 inoremap <silent><c-o> <esc>O
 
-" Ctrl + i inserts a single character from regular mode, staying in regular mode
-" Similar to rX, which replaces the current char with X
+" Ctrl + i insert a single character from regular mode, staying in regular mode.
+" similar to rX, which replaces the current char with X
 nnoremap <C-i> i_<Esc>r
+" Similar to above, ctrl+a appends 1 char and remains in regular mode
+nnoremap <C-a> a_<Esc>r
 
 " hitting escape clears search highlighting
 " nnoremap <silent> <esc> :noh<cr><esc>
 
+" vp highlights last pasted block
+nnoremap vp `[v`]
 
+" auto close chars (ctrl+v in insert mode before char to not run this)
+inoremap " ""<left>
+inoremap ' ''<left>
+inoremap ( ()<left>
+inoremap [ []<left>
+inoremap { {}<left>
+inoremap {<CR> {<CR>}<ESC>O
+inoremap {;<CR> {<CR>};<ESC>O
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Difftool
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if &diff
+    set noreadonly
+endif
