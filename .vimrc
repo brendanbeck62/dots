@@ -116,7 +116,7 @@ set shiftwidth=4
 set softtabstop=4
 set noshiftround " round indent to multiple of 'shiftwidth'
 
-# Terraform tabs are 2 spaces
+" Terraform tabs are 2 spaces
 autocmd Filetype hcl setlocal tabstop=2 shiftwidth=2 softtabstop=2
 
 
