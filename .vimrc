@@ -152,12 +152,31 @@ vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 " => Moving around, tabs, windows and buffers
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+set splitright
+set splitbelow
+
 """"""""""""""""""""""""""""""
 " => Status line
 """"""""""""""""""""""""""""""
 
 " Always show the status line
-" set laststatus=2
+" https://stackoverflow.com/a/5380230
+set laststatus=2
+
+" %1* at the beginning sets the color
+" %* at the end resets the color
+" %= splits the line between left and right
+set statusline=%1*              " start custom color
+set statusline +=\ %<%F         "full path
+set statusline +=%m             "modified flag
+set statusline +=\ \            " 2 spaces for padding between mod flag and Ln
+set statusline +=%=Ln           " Right half + 'Ln'
+set statusline +=\ %l           " 2 adds a space, current line
+set statusline +=/%L            "total lines
+set statusline +=\ Col          " Col
+set statusline +=\ %v\          "virtual column number
+set statusline +=%*             " end color
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -182,13 +201,17 @@ nnoremap <C-a> a_<Esc>r
 nnoremap vp `[v`]
 
 " auto close chars (ctrl+v in insert mode before char to not run this)
-inoremap " ""<left>
-inoremap ' ''<left>
-inoremap ( ()<left>
-inoremap [ []<left>
-inoremap { {}<left>
-inoremap {<CR> {<CR>}<ESC>O
-inoremap {;<CR> {<CR>};<ESC>O
+"inoremap " ""<left>
+"inoremap ' ''<left>
+"inoremap ( ()<left>
+"inoremap [ []<left>
+"inoremap { {}<left>
+"inoremap {<CR> {<CR>}<ESC>O
+"inoremap {;<CR> {<CR>};<ESC>O
+
+" move selected text line up and down
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Difftool
