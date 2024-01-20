@@ -22,6 +22,9 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Sets how many lines of history VIM has to remember
 set history=500
+" makesure ~/.vim/undodir exists
+set undofile
+set undodir=~/.vim/undodir
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -159,6 +162,12 @@ set splitbelow
 " => Status line
 """"""""""""""""""""""""""""""
 
+hi NormalColor guifg=Black guibg=Green ctermbg=46 ctermfg=0
+hi InsertColor guifg=Black guibg=Cyan ctermbg=51 ctermfg=0
+hi ReplaceColor guifg=Black guibg=maroon1 ctermbg=165 ctermfg=0
+hi VisualColor guifg=Black guibg=Orange ctermbg=202 ctermfg=0
+
+
 " Always show the status line
 " https://stackoverflow.com/a/5380230
 set laststatus=2
@@ -166,7 +175,7 @@ set laststatus=2
 " %1* at the beginning sets the color
 " %* at the end resets the color
 " %= splits the line between left and right
-set statusline=%1*              " start custom color
+set statusline =%1*            " start custom color
 set statusline +=\ %<%F         "full path
 set statusline +=%m             "modified flag
 set statusline +=\ \            " 2 spaces for padding between mod flag and Ln
@@ -176,6 +185,13 @@ set statusline +=/%L            "total lines
 set statusline +=\ Col          " Col
 set statusline +=\ %v\          "virtual column number
 set statusline +=%*             " end color
+set statusline+=%#NormalColor#%{(mode()=='n')?'\ NORMAL\ ':''}
+set statusline+=%#InsertColor#%{(mode()=='i')?'\ INSERT\ ':''}
+set statusline+=%#ReplaceColor#%{(mode()=='R')?'\ RPLACE\ ':''}
+set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
+
+" Don't show '-- INSERT --' in command line
+:set noshowmode
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
