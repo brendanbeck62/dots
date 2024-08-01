@@ -83,6 +83,9 @@ set sidescrolloff=8
 " Turn on syntax highlighting
 syntax on
 
+" fix for tmux
+set background=dark
+
 " Highlight searches in light grey
 hi Search ctermbg=LightGrey
 

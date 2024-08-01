@@ -20,3 +20,5 @@ A note on setting a theme (in this case gruvbox)
     - Find a .itermColors file like [this](https://github.com/shreyas-segu/gruvbox-dark-hard-iterm2/blob/main/GruvboxHardDark.itermcolors), and set it using the import function of the profile editor.
 
 The problem I ran into is that everyone's implentation differs slightly between vscode, vim, iterm so its jaring to switch between them. Maybe one day but for now I am just going to stick to my defaults
+
+maybe this: https://github.com/tusaeff/vscode-iterm2-theme-sync
