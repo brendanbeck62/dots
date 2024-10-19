@@ -2,6 +2,20 @@
 
 Literally just my configuration files
 
+## adobe
+
+### illustrator
+macos location:
+```
+~/Library/Preferences/Adobe Illustrator 28 Settings/en_US/Workspaces
+```
+
+Windows location:
+```
+C:\Users\chick\AppData\Roaming\Adobe\Adobe Illustrator 29 Settings\en_US\x64\Workspaces
+```
+
+
 ## ahk
 Make sure that AHK is installed
 
