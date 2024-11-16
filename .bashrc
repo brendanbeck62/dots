@@ -49,9 +49,9 @@ esac
 
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	color_prompt=yes
+    color_prompt=yes
     else
-	color_prompt=
+    color_prompt=
     fi
 fi
 
@@ -83,10 +83,6 @@ alias ll='ls -alFG'
 alias la='ls -AG'
 alias l='ls -CFG'
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -99,11 +95,3 @@ fi
 
 # hides the warning for the terminal
 export BASH_SILENCE_DEPRECATION_WARNING=1
-
-# ======================================
-# bat - cat syntax highlighting
-# https://github.com/sharkdp/bat
-alias cat='bat'
-
-# use bat to color manpages 
-export MANPAGER="sh -c 'col -bx | bat -l man -p'"
