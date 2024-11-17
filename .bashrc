@@ -88,9 +88,11 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
+alias gs='git status'
+alias gcm='git checkout -m'
+alias gcam='git checkout -am'
+alias gp='git push'
+
 
  # hides the warning for the terminal
  export BASH_SILENCE_DEPRECATION_WARNING=1
