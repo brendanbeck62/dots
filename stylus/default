@@ -1,0 +1,23 @@
+/* any site like stackoverflow */
+body.question-page .container {
+    /* how wide is too wide */
+    max-width: 2000px;
+    #content {
+        max-width: 2000px;
+    }
+    #left-sidebar {
+        display: none;
+    }
+    #sidebar {
+        display: none;
+    }
+    #mainbar {
+        width: 100%;
+    }
+}
+
+
+/* cookie popup */
+body.question-page #onetrust-consent-sdk {
+    display: none;
+}

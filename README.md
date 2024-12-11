@@ -36,3 +36,7 @@ A note on setting a theme (in this case gruvbox)
 The problem I ran into is that everyone's implentation differs slightly between vscode, vim, iterm so its jaring to switch between them. Maybe one day but for now I am just going to stick to my defaults
 
 maybe this: https://github.com/tusaeff/vscode-iterm2-theme-sync
+
+## Stylus
+Chrome extension that injects custom css
+https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne
