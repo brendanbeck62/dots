@@ -86,9 +86,9 @@ syntax on
 " fixes colors in tmux
 set background=dark
 
+" ~/.vim/colors/gruvbox.vim (https://github.com/morhetz/gruvbox)
 let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
-
 
 " Highlight searches in light grey
 hi Search ctermbg=LightGrey
