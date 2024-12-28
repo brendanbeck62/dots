@@ -83,8 +83,12 @@ set sidescrolloff=8
 " Turn on syntax highlighting
 syntax on
 
-" fix for tmux
+" fixes colors in tmux
 set background=dark
+
+let g:gruvbox_contrast_dark = 'hard'
+colorscheme gruvbox
+
 
 " Highlight searches in light grey
 hi Search ctermbg=LightGrey
@@ -103,7 +107,7 @@ au BufNewFile,BufRead Vagrantfile set filetype=ruby
 au BufNewFile,BufRead *.erb set filetype=eruby
 au BufNewFile,BufRead *.pp set filetype=puppet " syntax file located in ~/.vim/syntax/puppet.vim
 au BufNewFile,BufRead Jenkinsfile* set filetype=groovy
-au BufNewFile,BufRead *.tf,*.hcl,*.tfvars set filetype=hcl
+au BufNewFile,BufRead *.tf,*.hcl,*.tfvars set filetype=hcl | set syntax=hcl
 au BufNewFile,BufRead *.tfstate set filetype=json
 
 " Fixes a problem with groovy syntax highlighting?
@@ -165,10 +169,10 @@ set splitbelow
 " => Status line
 """"""""""""""""""""""""""""""
 
-hi NormalColor guifg=Black guibg=Green ctermbg=46 ctermfg=0
-hi InsertColor guifg=Black guibg=Cyan ctermbg=51 ctermfg=0
-hi ReplaceColor guifg=Black guibg=maroon1 ctermbg=165 ctermfg=0
-hi VisualColor guifg=Black guibg=Orange ctermbg=202 ctermfg=0
+hi NormalColor guifg=Black guibg=Green ctermbg=White ctermfg=Black
+hi InsertColor guifg=Black guibg=Cyan ctermbg=Cyan ctermfg=Black
+hi ReplaceColor guifg=Black guibg=maroon1 ctermbg=Magenta ctermfg=Black
+hi VisualColor guifg=Black guibg=Orange ctermbg=Yellow ctermfg=Black
 
 
 " Always show the status line
