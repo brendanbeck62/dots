@@ -73,7 +73,7 @@ command Copy call CopyToggle()
 
 " Mouse scrolling
 set mouse=a
-set scrolloff=8
+set scrolloff=15
 set sidescrolloff=8
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -165,6 +165,42 @@ vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 set splitright
 set splitbelow
 
+" Explorer
+let g:netrw_liststyle = 3
+let g:netrw_banner = 0
+" 1:open files in new horizontal split
+" 2:open files in new vertical split
+" 3:open files in new tab
+" 4:open in previous window
+let g:netrw_browse_split = 3
+let g:netrw_winsize = 25 " percentage of screen
+
+" Toggle Vexplore with Ctrl-E
+"function! ToggleVExplorer()
+"  if exists("t:expl_buf_num")
+"      let expl_win_num = bufwinnr(t:expl_buf_num)
+"      if expl_win_num != -1
+"          let cur_win_id = win_getid()
+"          exec expl_win_num . 'windo close'
+"          let prev_win_num = win_id2win(cur_win_id)
+"          if prev_win_num != 0
+"              exec prev_win_num . 'wincmd w'
+"          endif
+"      endif
+"      unlet t:expl_buf_num
+"  else
+"      exec '1wincmd w'
+"      Vexplore
+"      let t:expl_buf_num = bufnr("%")
+"  endif
+"endfunction
+"map <silent> <C-E> :call ToggleVExplorer() <CR>
+map <silent> <C-E> :Vex <CR>
+
+" Change directory to the current buffer when opening files.
+set autochdir
+
+
 """"""""""""""""""""""""""""""
 " => Status line
 """"""""""""""""""""""""""""""
@@ -242,3 +278,7 @@ vnoremap K :m '<-2<CR>gv=gv
 if &diff
     set noreadonly
 endif
+
+" for fzf
+set rtp+=/opt/homebrew/opt/fzf
+

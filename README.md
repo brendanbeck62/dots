@@ -19,7 +19,7 @@ C:\Users\chick\AppData\Roaming\Adobe\Adobe Illustrator 29 Settings\en_US\x64\Wor
 ## ahk
 Make sure that AHK is installed
 
-### iterm
+## iterm
 
 A note on setting a theme (in this case gruvbox)
 - Vim
@@ -40,3 +40,24 @@ maybe this: https://github.com/tusaeff/vscode-iterm2-theme-sync
 ## Stylus
 Chrome extension that injects custom css
 https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne
+
+## vim
+
+### todo
+- fzf file opening
+    - keybinding to open
+- buffers instead of tabs
+    - left and right keys change buffer
+- ctrl + n
+    - vim.keymap.set('v', '<C-h>', '<cmd>nohlsearch<cr>')
+    - vim.keymap.set('n', '<C-h>', '<cmd>nohlsearch<cr>')
+- no arrow keys --- force yourself to use the home row
+    - vim.keymap.set('n', '<up>', '<nop>')
+    - vim.keymap.set('n', '<down>', '<nop>')
+    - vim.keymap.set('i', '<up>', '<nop>')
+    - vim.keymap.set('i', '<down>', '<nop>')
+    - vim.keymap.set('i', '<left>', '<nop>')
+    - vim.keymap.set('i', '<right>', '<nop>')
+    - -- let the left and right arrows be useful: they can switch buffers
+    - vim.keymap.set('n', '<left>', ':bp<cr>')
+    - vim.keymap.set('n', '<right>', ':bn<cr>')
