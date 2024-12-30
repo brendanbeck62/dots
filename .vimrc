@@ -1,5 +1,6 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Maintainer: 
+"
+" Maintainer:
 "       Brendan Beck - @brendanbeck62
 "
 " Sections:
@@ -20,16 +21,17 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Sets how many lines of history VIM has to remember
 set history=500
 " makesure ~/.vim/undodir exists
 set undofile
 set undodir=~/.vim/undodir
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => User Interface
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " Set 7 lines to the cursor - when moving vertically using j/k
 set so=7
 
@@ -112,6 +114,7 @@ au BufNewFile,BufRead *.tfstate set filetype=json
 
 " Fixes a problem with groovy syntax highlighting?
 set re=0
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -120,7 +123,7 @@ set re=0
 set expandtab
 set smarttab
 
-" 1 tab == 2 spaces
+" 1 tab == 4 spaces
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -128,7 +131,6 @@ set noshiftround " round indent to multiple of 'shiftwidth'
 
 " Terraform tabs are 2 spaces
 autocmd Filetype hcl setlocal tabstop=2 shiftwidth=2 softtabstop=2
-
 
 set autoindent
 
@@ -145,13 +147,13 @@ function Trimws()
   %s/\s\+$//e
 endfunction
 command Trim call Trimws()
-command Trimw call Trimws() | w
+" trim on file write
+au BufWrite * :Trim
 
 """"""""""""""""""""""""""""""
 " => Visual mode related
 """"""""""""""""""""""""""""""
 " Visual mode pressing * or # searches for the current selection
-" Super useful! From an idea by Michael Naumann
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 
 " Reselects the selection after indent or dedent
@@ -168,48 +170,24 @@ set splitbelow
 " Explorer
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
-" 1:open files in new horizontal split
-" 2:open files in new vertical split
-" 3:open files in new tab
-" 4:open in previous window
-let g:netrw_browse_split = 3
+let g:netrw_browse_split = 0
 let g:netrw_winsize = 25 " percentage of screen
 
-" Toggle Vexplore with Ctrl-E
-"function! ToggleVExplorer()
-"  if exists("t:expl_buf_num")
-"      let expl_win_num = bufwinnr(t:expl_buf_num)
-"      if expl_win_num != -1
-"          let cur_win_id = win_getid()
-"          exec expl_win_num . 'windo close'
-"          let prev_win_num = win_id2win(cur_win_id)
-"          if prev_win_num != 0
-"              exec prev_win_num . 'wincmd w'
-"          endif
-"      endif
-"      unlet t:expl_buf_num
-"  else
-"      exec '1wincmd w'
-"      Vexplore
-"      let t:expl_buf_num = bufnr("%")
-"  endif
-"endfunction
-"map <silent> <C-E> :call ToggleVExplorer() <CR>
-map <silent> <C-E> :Vex <CR>
+" FZF
+map <silent> <C-P> :FZF <CR>
+let g:fzf_layout = { 'down':'~20%' }
 
 " Change directory to the current buffer when opening files.
 set autochdir
-
 
 """"""""""""""""""""""""""""""
 " => Status line
 """"""""""""""""""""""""""""""
 
-hi NormalColor guifg=Black guibg=Green ctermbg=White ctermfg=Black
+hi NormalColor guifg=Black guibg=White ctermbg=White ctermfg=Black
 hi InsertColor guifg=Black guibg=Cyan ctermbg=Cyan ctermfg=Black
-hi ReplaceColor guifg=Black guibg=maroon1 ctermbg=Magenta ctermfg=Black
+hi ReplaceColor guifg=Black guibg=Magenta ctermbg=Magenta ctermfg=Black
 hi VisualColor guifg=Black guibg=Orange ctermbg=Yellow ctermfg=Black
-
 
 " Always show the status line
 " https://stackoverflow.com/a/5380230
@@ -232,10 +210,10 @@ set statusline+=%#NormalColor#%{(mode()=='n')?'\ NORMAL\ ':''}
 set statusline+=%#InsertColor#%{(mode()=='i')?'\ INSERT\ ':''}
 set statusline+=%#ReplaceColor#%{(mode()=='R')?'\ RPLACE\ ':''}
 set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
+" TODO: can't figure out what to match for visual block mode
 
 " Don't show '-- INSERT --' in command line
 :set noshowmode
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Editing mappings
@@ -244,33 +222,25 @@ set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
 nnoremap H ^
 nnoremap L $
 
-" Insert line above cursor and move cursor to that line at correct indent while staying in insert mode (Control + O in insert mode)
+" Insert line above cursor and move cursor to that line at correct indent while staying in insert mode
 inoremap <silent><c-o> <esc>O
 
-" Ctrl + i insert a single character from regular mode, staying in regular mode.
-" similar to rX, which replaces the current char with X
-nnoremap <C-i> i_<Esc>r
-" Similar to above, ctrl+a appends 1 char and remains in regular mode
-nnoremap <C-a> a_<Esc>r
+" no arrow keys for you! use left and right for buffer next/prev
+nnoremap <up> <nop>
+nnoremap <down> <nop>
+nnoremap <left> :bp<cr>
+nnoremap <right> :bn<cr>
+inoremap <up> <nop>
+inoremap <down> <nop>
+inoremap <left> <nop>
+inoremap <right> <nop>
+vnoremap <up> <nop>
+vnoremap <down> <nop>
+vnoremap <left> <nop>
+vnoremap <right> <nop>
 
-" hitting escape clears search highlighting
-" nnoremap <silent> <esc> :noh<cr><esc>
-
-" vp highlights last pasted block
-nnoremap vp `[v`]
-
-" auto close chars (ctrl+v in insert mode before char to not run this)
-"inoremap " ""<left>
-"inoremap ' ''<left>
-"inoremap ( ()<left>
-"inoremap [ []<left>
-"inoremap { {}<left>
-"inoremap {<CR> {<CR>}<ESC>O
-"inoremap {;<CR> {<CR>};<ESC>O
-
-" move selected text line up and down
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
+nnoremap <C-n> :nohlsearch<cr>
+vnoremap <C-n> :nohlsearch<cr>
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Difftool
@@ -279,6 +249,9 @@ if &diff
     set noreadonly
 endif
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => misc
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " for fzf
 set rtp+=/opt/homebrew/opt/fzf
 
