@@ -7,13 +7,8 @@
 "    -> General
 "    -> Hotkeys
 "    -> Colors and Fonts
-"    -> VIM user interface
-"    -> Text, tab and indent related
-"    -> Visual mode related
-"    -> Moving around, tabs and buffers
-"    -> Status line
-"    -> Difftool
-"    -> Fzf
+"    -> Configurations
+"    -> Statusline
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -21,18 +16,70 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" set leader
-nnoremap <SPACE> <Nop>
-let mapleader = " "
+" Encoding
+scriptencoding utf-8
+set encoding=utf-8
 
-" Sets how many lines of history VIM has to remember
-set history=500
 
-" makesure ~/.vim/undodir exists
+let mapleader = " " " set the leader to <space>
+set autoread        " reload files that have not been modified
+set history=500     " command history
+set hidden          " Allow buffers to be backgrounded without being saved
+set number          " use line numbers
+set rnu             " relative line numbers
+set ruler           " show the line number and column in status bar
+set mouse=a         " mouse scrolling
+set scrolloff=15    " how many lines to keep on screen when scrolling up
+set list            " show hidden characters
+set listchars=tab:▸\ ,trail:·
+set showmatch       " Show matching brackets when text indicator is over them
+set splitright      " splits go to the right by default
+set splitbelow      " splits go below by default
+set noshowmode     " Don't show '-- INSERT --' in command line
+
+" No annoying sound on errors
+set noerrorbells
+set novisualbell
+set belloff=all
+
+" session options
+"set sessionoptions="curdir,folds,help,options,tabpages,winsize"
+
+" backup settings
 set undofile
 set undodir=~/.vim/undodir
 
-set hidden
+" Searching
+set hlsearch
+set incsearch
+set ignorecase
+set smartcase
+
+" tabs
+set expandtab           " expand tabs to what we want
+set tabstop=4           " tab width
+set shiftwidth=4        " amount of spaces when shifting
+set softtabstop=4       " soft tab width in spaces
+set noshiftround        " round indent to multiple of 'shiftwidth'
+set autoindent
+
+" Tab completion settings
+set wildmode=list:longest     " Wildcard matches show a list, matching the longest first
+set wildignore+=.git,.hg,.svn " Ignore version control repos
+set wildignore+=*.6           " Ignore Go compiled files
+set wildignore+=*.pyc         " Ignore Python compiled files
+set wildignore+=*.rbc         " Ignore Rubinius compiled files
+set wildignore+=*.swp         " Ignore vim backups
+
+" Change directory to the current buffer when opening files.
+set autochdir
+
+" makes FZF work idk
+set rtp+=/opt/homebrew/opt/fzf
+
+if &diff
+    set noreadonly
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Hotkeys
@@ -60,11 +107,14 @@ nnoremap k gk
 " Insert line above cursor and move cursor to that line at correct indent while staying in insert mode
 inoremap <silent><c-o> <esc>O
 
+" Buffer management
+nnoremap <left> :bp<cr>     " buffer previous
+nnoremap <right> :bn<cr>    " buffer next
+nnoremap <leader>d :bd<cr>  " buffer delete
+
 " no arrow keys for you! use left and right for buffer next/prev
 nnoremap <up> <nop>
 nnoremap <down> <nop>
-nnoremap <left> :bp<cr>
-nnoremap <right> :bn<cr>
 inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
@@ -80,6 +130,13 @@ nnoremap <leader>h <C-w>s
 
 " source vimrc
 nnoremap <Leader>rc :source ~/.vimrc<CR>:echo "Reloaded .vimrc"<CR>
+
+" Visual mode pressing * or # searches for the current selection
+vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
+
+" Reselects the selection after indent or dedent
+vnoremap < <gv
+vnoremap > >gv
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
@@ -103,8 +160,6 @@ highlight DiffChange term=reverse cterm=bold ctermbg=darkcyan ctermfg=black
 highlight DiffText term=reverse cterm=bold ctermbg=gray ctermfg=white
 highlight DiffDelete term=reverse cterm=bold ctermbg=darkred ctermfg=black
 
-" Encoding
-set encoding=utf-8
 
 " Syntax highlight file associations
 au BufNewFile,BufRead Vagrantfile set filetype=ruby
@@ -118,75 +173,14 @@ au BufNewFile,BufRead *.tfstate set filetype=json
 set re=0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => User Interface
+" => Functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set 7 lines to the cursor - when moving vertically using j/k
-set so=7
-
-"Always show current position
-set ruler
-
-" Highlight search results
-set hlsearch
-
-" Searching
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
-set showmatch
-
-" Show matching brackets when text indicator is over them
-set showmatch
-
-" How many tenths of a second to blink when matching brackets
-set mat=2
-
-" No annoying sound on errors
-set noerrorbells
-set novisualbell
-set belloff=all
-set t_vb=
-set tm=500
-
-" Show line numbers
-set relativenumber
-set number
-set rnu
-
 " Function to toggle line numbers for copying text
 function CopyToggle()
   set rnu!
   set number!
 endfunction
 command Copy call CopyToggle()
-
-" Mouse scrolling
-set mouse=a
-set scrolloff=15
-set sidescrolloff=8
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Text, tab and indent related
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Use spaces instead of tabs
-set expandtab
-set smarttab
-
-" 1 tab == 4 spaces
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
-set noshiftround " round indent to multiple of 'shiftwidth'
-
-" Terraform tabs are 2 spaces
-autocmd Filetype hcl setlocal tabstop=2 shiftwidth=2 softtabstop=2
-
-set autoindent
-
-" Highlight trailing whitespace
-set listchars=tab:▸\ ,trail:·
-set list
 
 " Function to remove trailing whitespace
 function Trimws()
@@ -196,22 +190,9 @@ command Trim call Trimws()
 " trim on file write
 au BufWrite * :Trim
 
-""""""""""""""""""""""""""""""
-" => Visual mode related
-""""""""""""""""""""""""""""""
-" Visual mode pressing * or # searches for the current selection
-vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
-
-" Reselects the selection after indent or dedent
-:vnoremap < <gv
-:vnoremap > >gv
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Moving around, tabs, windows and buffers
+" => Configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set splitright
-set splitbelow
-
 " Explorer
 let g:netrw_liststyle = 3
 let g:netrw_banner = 0
@@ -221,13 +202,10 @@ let g:netrw_winsize = 25 " percentage of screen
 " FZF
 let g:fzf_layout = { 'down':'~20%' }
 
-" Change directory to the current buffer when opening files.
-set autochdir
 
 """"""""""""""""""""""""""""""
 " => Status line
 """"""""""""""""""""""""""""""
-
 hi NormalColor guifg=Black guibg=White ctermbg=White ctermfg=Black
 hi InsertColor guifg=Black guibg=Cyan ctermbg=Cyan ctermfg=Black
 hi ReplaceColor guifg=Black guibg=Magenta ctermbg=Magenta ctermfg=Black
@@ -255,18 +233,3 @@ set statusline+=%#InsertColor#%{(mode()=='i')?'\ INSERT\ ':''}
 set statusline+=%#ReplaceColor#%{(mode()=='R')?'\ RPLACE\ ':''}
 set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
 " TODO: can't figure out what to match for visual block mode
-
-" Don't show '-- INSERT --' in command line
-:set noshowmode
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Difftool
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if &diff
-    set noreadonly
-endif
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => fzf
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-set rtp+=/opt/homebrew/opt/fzf
