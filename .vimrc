@@ -90,8 +90,8 @@ nnoremap H ^
 nnoremap L $
 
 " stop searching
-nnoremap <C-n> :nohlsearch<cr>
-vnoremap <C-n> :nohlsearch<cr>
+nnoremap <leader>n :nohlsearch<cr>
+vnoremap <leader>n :nohlsearch<cr>
 
 " move up/down visual lines instead of logical lines
 nnoremap j gj
@@ -101,7 +101,7 @@ nnoremap k gk
 inoremap <silent><c-o> <esc>O
 
 " Buffer management
-nnoremap <Leader><Tab> :buffer <Tab>    " wildmenu for buffer selection
+nnoremap <Leader><Tab> :buffer<space><Tab>
 nnoremap <left> :bp<cr>                 " buffer previous
 nnoremap <right> :bn<cr>                " buffer next
 nnoremap <leader>d :bd<cr>              " buffer delete
@@ -197,6 +197,12 @@ let g:netrw_winsize = 25 " percentage of screen
 " FZF
 let g:fzf_layout = { 'down':'~20%' }
 
+" set tmux tab + terminal tab to 'vim {full path}'
+autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
+autocmd VimLeave * call system("tmux rename-window zsh")
+" for not in tmux
+autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
+set title
 
 """"""""""""""""""""""""""""""
 " => Status line
