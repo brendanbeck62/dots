@@ -20,7 +20,6 @@
 scriptencoding utf-8
 set encoding=utf-8
 
-
 let mapleader = " " " set the leader to <space>
 set autoread        " reload files that have not been modified
 set history=500     " command history
@@ -35,15 +34,12 @@ set listchars=tab:▸\ ,trail:·
 set showmatch       " Show matching brackets when text indicator is over them
 set splitright      " splits go to the right by default
 set splitbelow      " splits go below by default
-set noshowmode     " Don't show '-- INSERT --' in command line
+set noshowmode      " Don't show '-- INSERT --' in command line
 
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
 set belloff=all
-
-" session options
-"set sessionoptions="curdir,folds,help,options,tabpages,winsize"
 
 " backup settings
 set undofile
@@ -64,12 +60,14 @@ set noshiftround        " round indent to multiple of 'shiftwidth'
 set autoindent
 
 " Tab completion settings
-set wildmode=list:longest     " Wildcard matches show a list, matching the longest first
-set wildignore+=.git,.hg,.svn " Ignore version control repos
-set wildignore+=*.6           " Ignore Go compiled files
-set wildignore+=*.pyc         " Ignore Python compiled files
-set wildignore+=*.rbc         " Ignore Rubinius compiled files
-set wildignore+=*.swp         " Ignore vim backups
+set wildmenu                    " enables <leader><Tab> to change buffers
+set wildcharm=<Tab>             " enables <Tab> to be used in remap cmds
+set wildmode=longest:full,full  " Wildcard matches show a list, matching the longest first
+set wildignore+=.git,.hg,.svn   " Ignore version control repos
+set wildignore+=*.6             " Ignore Go compiled files
+set wildignore+=*.pyc           " Ignore Python compiled files
+set wildignore+=*.rbc           " Ignore Rubinius compiled files
+set wildignore+=*.swp           " Ignore vim backups
 
 " Change directory to the current buffer when opening files.
 set autochdir
@@ -87,14 +85,9 @@ endif
 " quick open
 noremap <silent> <C-P> :FZF <CR>
 
-" TODO: search buffers
-
 " Move to beginning/end of line without taking my fingers off of home row:
 nnoremap H ^
 nnoremap L $
-
-" toggle between last 2 buffers
-nnoremap <leader><leader> <c-^>
 
 " stop searching
 nnoremap <C-n> :nohlsearch<cr>
@@ -108,9 +101,11 @@ nnoremap k gk
 inoremap <silent><c-o> <esc>O
 
 " Buffer management
-nnoremap <left> :bp<cr>     " buffer previous
-nnoremap <right> :bn<cr>    " buffer next
-nnoremap <leader>d :bd<cr>  " buffer delete
+nnoremap <Leader><Tab> :buffer <Tab>    " wildmenu for buffer selection
+nnoremap <left> :bp<cr>                 " buffer previous
+nnoremap <right> :bn<cr>                " buffer next
+nnoremap <leader>d :bd<cr>              " buffer delete
+nnoremap <leader><leader> <c-^>         " toggle between last 2 buffers
 
 " no arrow keys for you! use left and right for buffer next/prev
 nnoremap <up> <nop>
@@ -129,7 +124,7 @@ nnoremap <leader>v <C-w>v
 nnoremap <leader>h <C-w>s
 
 " source vimrc
-nnoremap <Leader>rc :source ~/.vimrc<CR>:echo "Reloaded .vimrc"<CR>
+nnoremap <Leader>r :source ~/.vimrc<CR>:echo "Reloaded .vimrc"<CR>
 
 " Visual mode pressing * or # searches for the current selection
 vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
