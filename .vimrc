@@ -146,9 +146,6 @@ set background=dark
 let g:gruvbox_contrast_dark = 'hard'
 colorscheme gruvbox
 
-" Highlight searches in light grey
-hi Search ctermbg=LightGrey
-
 " Vim diff colors
 highlight DiffAdd term=reverse cterm=bold ctermbg=darkgreen ctermfg=black
 highlight DiffChange term=reverse cterm=bold ctermbg=darkcyan ctermfg=black
