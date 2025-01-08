@@ -72,7 +72,7 @@ set wildignore+=*.swp           " Ignore vim backups
 " Change directory to the current buffer when opening files.
 set autochdir
 
-" makes FZF work idk
+" add vim to the RunTimePath
 set rtp+=/opt/homebrew/opt/fzf
 
 if &diff
@@ -82,7 +82,8 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Hotkeys
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" quick open
+" quick open (current dir)
+" if you want to open in another directory, run `:cd <dir>` before <C-P>
 noremap <silent> <C-P> :FZF <CR>
 
 " Move to beginning/end of line without taking my fingers off of home row:
@@ -193,6 +194,10 @@ let g:netrw_winsize = 25 " percentage of screen
 
 " FZF
 let g:fzf_layout = { 'down':'~20%' }
+" remove statusline when fzf window is active
+autocmd! FileType fzf
+autocmd  FileType fzf set laststatus=0 noshowmode noruler
+  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
 
 " set tmux tab + terminal tab to 'vim {full path}'
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
@@ -231,3 +236,4 @@ set statusline+=%#InsertColor#%{(mode()=='i')?'\ INSERT\ ':''}
 set statusline+=%#ReplaceColor#%{(mode()=='R')?'\ RPLACE\ ':''}
 set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
 " TODO: can't figure out what to match for visual block mode
+
