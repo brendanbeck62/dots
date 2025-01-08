@@ -11,7 +11,7 @@ nmap L $
 " Emulate Tab Switching https://vimhelp.org/tabpage.txt.html#gt
 " have to delete default obsidian hot keys
 exmap tabnext obcommand workspace:next-tab
-nmap gt :tabnext
+nmap gt :tabnext<CR>
 exmap tabprev obcommand workspace:previous-tab
-nmap gT :tabprev
+nmap gT :tabprev<CR>
 
