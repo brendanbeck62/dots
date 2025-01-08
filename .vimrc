@@ -134,6 +134,9 @@ vnoremap <silent> * :<C-u>call VisualSelection('', '')<CR>/<C-R>=@/<CR><CR>
 vnoremap < <gv
 vnoremap > >gv
 
+" Command to write as root if we dont' have permission (thanks mitchellh)
+cmap w!! %!sudo tee > /dev/null %
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
