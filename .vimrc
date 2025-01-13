@@ -147,8 +147,11 @@ syntax on
 set background=dark
 
 " ~/.vim/colors/gruvbox.vim (https://github.com/morhetz/gruvbox)
-let g:gruvbox_contrast_dark = 'hard'
-colorscheme gruvbox
+" expand is requred if using '~'
+if filereadable(expand("~/.vim/colors/gruvbox.vim"))
+    let g:gruvbox_contrast_dark = 'hard'
+    colorscheme gruvbox
+endif
 
 " Vim diff colors
 highlight DiffAdd term=reverse cterm=bold ctermbg=darkgreen ctermfg=black
