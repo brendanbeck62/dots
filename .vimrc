@@ -31,10 +31,13 @@ set mouse=a         " mouse scrolling
 set scrolloff=15    " how many lines to keep on screen when scrolling up
 set list            " show hidden characters
 set listchars=tab:▸\ ,trail:·
+set nowrap          " don't wrap newlines
 set showmatch       " Show matching brackets when text indicator is over them
 set splitright      " splits go to the right by default
 set splitbelow      " splits go below by default
 set noshowmode      " Don't show '-- INSERT --' in command line
+set timeoutlen=1000 " time in ms to wait to see what next char is (mappings)
+set ttimeoutlen=50  " (keycodes)
 
 " No annoying sound on errors
 set noerrorbells
@@ -70,7 +73,7 @@ set wildignore+=*.rbc           " Ignore Rubinius compiled files
 set wildignore+=*.swp           " Ignore vim backups
 
 " Change directory to the current buffer when opening files.
-set autochdir
+"set autochdir
 
 " add vim to the RunTimePath
 set rtp+=/opt/homebrew/opt/fzf
@@ -84,7 +87,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quick open (current dir)
 " if you want to open in another directory, run `:cd <dir>` before <C-P>
-noremap <silent> <C-P> :FZF <CR>
+noremap <silent> <C-P> :FZF --border <CR>
 
 " Move to beginning/end of line without taking my fingers off of home row:
 nnoremap H ^
@@ -105,7 +108,7 @@ inoremap <silent><c-o> <esc>O
 nnoremap <Leader><Tab> :buffer<space><Tab>
 nnoremap <left> :bp<cr>                 " buffer previous
 nnoremap <right> :bn<cr>                " buffer next
-nnoremap <leader>d :bd<cr>              " buffer delete
+nnoremap <leader>d :bd!<cr>              " buffer delete
 nnoremap <leader><leader> <c-^>         " toggle between last 2 buffers
 
 " no arrow keys for you! use left and right for buffer next/prev
@@ -145,6 +148,9 @@ syntax on
 
 " fixes colors in tmux
 set background=dark
+
+" make sure we are using cterm not gui
+set notermguicolors
 
 " ~/.vim/colors/gruvbox.vim (https://github.com/morhetz/gruvbox)
 " expand is requred if using '~'
@@ -203,7 +209,7 @@ let g:fzf_layout = { 'down':'~20%' }
 " remove statusline when fzf window is active
 autocmd! FileType fzf
 autocmd  FileType fzf set laststatus=0 noshowmode noruler
-  \| autocmd BufLeave <buffer> set laststatus=2 showmode ruler
+  \| autocmd BufLeave <buffer> set laststatus=2 ruler
 
 " set tmux tab + terminal tab to 'vim {full path}'
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
@@ -216,9 +222,12 @@ set title
 " => Status line
 """"""""""""""""""""""""""""""
 hi NormalColor guifg=Black guibg=White ctermbg=White ctermfg=Black
-hi InsertColor guifg=Black guibg=Cyan ctermbg=Cyan ctermfg=Black
+hi InsertColor guifg=Black guibg=Green ctermbg=Green ctermfg=Black
 hi ReplaceColor guifg=Black guibg=Magenta ctermbg=Magenta ctermfg=Black
 hi VisualColor guifg=Black guibg=Orange ctermbg=Yellow ctermfg=Black
+
+" this "User1" is the %1 referenced in the status line
+hi User1 ctermfg=White ctermbg=8
 
 " Always show the status line
 " https://stackoverflow.com/a/5380230
@@ -242,4 +251,3 @@ set statusline+=%#InsertColor#%{(mode()=='i')?'\ INSERT\ ':''}
 set statusline+=%#ReplaceColor#%{(mode()=='R')?'\ RPLACE\ ':''}
 set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
 " TODO: can't figure out what to match for visual block mode
-
