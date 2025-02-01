@@ -28,6 +28,7 @@ set number          " use line numbers
 set rnu             " relative line numbers
 set ruler           " show the line number and column in status bar
 set mouse=a         " mouse scrolling
+set ttymouse=sgr    " removes the legacy 223 character buffer limit
 set scrolloff=15    " how many lines to keep on screen when scrolling up
 set list            " show hidden characters
 set listchars=tab:▸\ ,trail:·
