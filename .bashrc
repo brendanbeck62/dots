@@ -93,8 +93,8 @@ alias la='ls -A'
 alias l='ls -CF'
 
 alias gs='git status'
-alias gcm='git checkout -m'
-alias gcam='git checkout -am'
+alias gcm='git commit -m'
+alias gcam='git commit -am'
 alias gp='git push'
 
 
