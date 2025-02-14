@@ -88,7 +88,7 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " quick open (current dir)
 " if you want to open in another directory, run `:cd <dir>` before <C-P>
-noremap <silent> <C-P> :FZF --border <CR>
+noremap <silent> <C-P> :FZF --border --preview cat\ {} <CR>
 
 " Move to beginning/end of line without taking my fingers off of home row:
 nnoremap H ^

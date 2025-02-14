@@ -64,6 +64,19 @@ unsetopt share_history
 # remove duplicates from history
 setopt HIST_FIND_NO_DUPS
 
+source <(fzf --zsh)
+# --strip-cwd-prefix
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
+function fcd() {
+    if [[ "$1" != "" && -d $1 ]]
+    then
+        export FZF_DEFAULT_COMMAND='fd . $1'
+    else
+        export FZF_DEFAULT_COMMAND='fd . $HOME'
+    fi
+    cd "$(fzf --height 30% --reverse --border)"
+}
+
 # python virtualenvwrapper setup
 export WORKON_HOME=~/.py-envs
 export VIRTUALENVWRAPPER_PYTHON=/Library/Frameworks/Python.framework/Versions/Current/bin/python3
