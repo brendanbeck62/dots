@@ -207,10 +207,14 @@ let g:netrw_winsize = 25 " percentage of screen
 
 " FZF
 let g:fzf_layout = { 'down':'~20%' }
+
 " remove statusline when fzf window is active
 autocmd! FileType fzf
 autocmd  FileType fzf set laststatus=0 noshowmode noruler
   \| autocmd BufLeave <buffer> set laststatus=2 ruler
+
+" use jq to format json files
+autocmd FileType json :silent %!jq .
 
 " set tmux tab + terminal tab to 'vim {full path}'
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
