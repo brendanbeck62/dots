@@ -38,26 +38,3 @@ Update: https://github.com/tinted-theming/home
 Chrome extension that injects custom css
 https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne
 
-## vim
-
-### todo
-- [x] fzf file opening
-    - keybinding to open (ctrl + p)
-- [x] buffers instead of tabs
-    - [x] left and right keys change buffer
-- [x] ctrl + n
-    - vim.keymap.set('v', '<C-h>', '<cmd>nohlsearch<cr>')
-    - vim.keymap.set('n', '<C-h>', '<cmd>nohlsearch<cr>')
-- [x] no arrow keys --- force yourself to use the home row
-    - vim.keymap.set('n', '<up>', '<nop>')
-    - vim.keymap.set('n', '<down>', '<nop>')
-    - vim.keymap.set('i', '<up>', '<nop>')
-    - vim.keymap.set('i', '<down>', '<nop>')
-    - vim.keymap.set('i', '<left>', '<nop>')
-    - vim.keymap.set('i', '<right>', '<nop>')
-    - vim.keymap.set('n', '<left>', ':bp<cr>')
-    - vim.keymap.set('n', '<right>', ':bn<cr>')
-- [ ] change status line of inactive splits
-- [ ] visual block mode doesnt trigger statusline
-
-

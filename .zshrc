@@ -10,6 +10,7 @@ fi
 # Append directories to path
 path+=('/Users/brendan/src/scripts')
 path+=('/Users/brendan/.git')
+path+=('/Library/TeX/texbin')
 export PATH
 
 # Path to your oh-my-zsh installation.
