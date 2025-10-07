@@ -38,3 +38,10 @@ Update: https://github.com/tinted-theming/home
 Chrome extension that injects custom css
 https://chromewebstore.google.com/detail/stylus/clngdbkpkpeebahjckkjfobafhncgmne
 
+
+
+# TODO
+
+- [ ] .zshrc
+    - [ ] have a base .zshrc with no computer specific stuff
+    - [ ] have a sort of .env thing that is where computer specific stuff gets added, probably not git tracked
