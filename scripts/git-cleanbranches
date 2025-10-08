@@ -1,0 +1,12 @@
+#!/bin/bash
+
+echo "Will delete the following branches from local:"
+git fetch -p && git branch -vv | awk '/: gone]/{print $1}'
+
+read -n1 -p "Are you down? [Y,n]" doit
+case $doit in
+  y|Y) git fetch -p && git branch -vv | awk '/: gone]/{print $1}' | xargs git branch -D ;;
+  *) printf "\nexiting\n" && exit 1 ;;
+esac
+
+printf "\ndone\n"

@@ -1,10 +1,48 @@
 
-DOTS=~/dots
+DOTS=$(pwd)
+read -p "Where are the dots located? [$DOTS]: " INDOTS
+DOTS=${INDOTS:-$DOTS}
 
-ln -sf $DOTS/.bashrc ~/.bashrc
+read -p "Which context are you running this in [home/work]: " CONTEXT
+if [[ $CONTEXT != "home" && $CONTEXT != "work" ]]; then
+    echo "ERROR: context must be one of [home/work]"
+    exit 1
+fi
+
+if [[ "$CONTEXT" == "home" ]]; then
+    # bash/zsh
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        ln -sf $DOTS/.bashrc ~/.bashrc
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        ln -sf $DOTS/.zshrc ~/.zshrc
+    fi
+
+elif [[ "$CONTEXT" == "work" ]]; then
+    # bash/zsh
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        ln -sf $DOTS/.bashrc ~/.bashrc
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        ln -sf $DOTS/.zshrc ~/.zshrc
+    fi
+
+fi
+
+
 ln -sf $DOTS/.vimrc ~/.vimrc
 mkdir -p ~/.vim/colors
 ln -sf $DOTS/.vim/colors/gruvbox.vim ~/.vim/colors/gruvbox.vim
+
 ln -sf $DOTS/.tmux.conf ~/.tmux.conf
 
-bash $DOTS/gitconfigure.sh
+mkdir -p ~/.config/ghostty
+ln -sf $DOTS/.config/ghostty/config ~/.config/ghostty/
+
+# configure git
+if command -v git >/dev/null 2>&1
+then
+    git config --global pager.branch false
+    git config --global branch.sort -committerdate
+    git config --global column.ui auto
+    git config --global column.status never
+fi
+

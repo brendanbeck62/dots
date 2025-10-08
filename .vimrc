@@ -86,6 +86,11 @@ endif
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Hotkeys
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" unmap F1 for help
+nnoremap <F1> <Nop>
+inoremap <F1> <Nop>
+vnoremap <F1> <Nop>
+
 " quick open (current dir)
 " if you want to open in another directory, run `:cd <dir>` before <C-P>
 noremap <silent> <C-P> :FZF --border --preview cat\ {} <CR>
@@ -128,6 +133,10 @@ vnoremap <right> <nop>
 nnoremap <leader>v <C-w>v
 nnoremap <leader>h <C-w>s
 
+" leader + </> move the vsp between quarters. Ctrl+w </> still moves one unit at a time
+nnoremap <silent> <Leader>< :exe "vertical resize " . (winwidth(0) * 4/3)<CR>
+nnoremap <silent> <Leader>> :exe "vertical resize " . (winwidth(0) * 3/4)<CR>
+
 " source vimrc
 nnoremap <Leader>r :source ~/.vimrc<CR>:echo "Reloaded .vimrc"<CR>
 
@@ -156,15 +165,16 @@ set notermguicolors
 " ~/.vim/colors/gruvbox.vim (https://github.com/morhetz/gruvbox)
 " expand is requred if using '~'
 if filereadable(expand("~/.vim/colors/gruvbox.vim"))
+    " set let s:gb.dark0_hard  = ['#111111', 234] to 233 for darker background in ~/.vim/colors/gruvbox.vim
     let g:gruvbox_contrast_dark = 'hard'
     colorscheme gruvbox
 endif
 
 " Vim diff colors
-highlight DiffAdd term=reverse cterm=bold ctermbg=darkgreen ctermfg=black
-highlight DiffChange term=reverse cterm=bold ctermbg=darkcyan ctermfg=black
-highlight DiffText term=reverse cterm=bold ctermbg=gray ctermfg=white
-highlight DiffDelete term=reverse cterm=bold ctermbg=darkred ctermfg=black
+"highlight DiffAdd term=reverse cterm=bold ctermbg=darkgreen ctermfg=black
+"highlight DiffChange term=reverse cterm=bold ctermbg=darkcyan ctermfg=black
+"highlight DiffText term=reverse cterm=bold ctermbg=gray ctermfg=white
+"highlight DiffDelete term=reverse cterm=bold ctermbg=darkred ctermfg=black
 
 
 " Syntax highlight file associations
@@ -196,6 +206,26 @@ command Trim call Trimws()
 " trim on file write
 au BufWrite * :Trim
 
+" convert jenkins object to pretty print
+function! PrettyPrintConfig()
+  silent! %s/\s\+/ /g
+  silent! %s/\(\w\)\s*:\s*/\1: /g
+
+  silent! %s/,\s*/,\r  /g
+  silent! %s/\[\s*/[\r  /g
+  silent! %s/\s*\]/\r]/g
+
+  normal! gg=G
+
+  silent! %g/^\s*\w\+:/s/^\(\s*\)\(\w\+\):\s*/\1\2: /g
+endfunction
+
+" Map it to a command
+command! PrettyConfig call PrettyPrintConfig()
+
+" Remove every other line when newlines are created when pasting into vim
+command! CleanNewlines %s/\n\n\([^\n]\)/\r\1/g
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Configuration
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -214,7 +244,8 @@ autocmd  FileType fzf set laststatus=0 noshowmode noruler
   \| autocmd BufLeave <buffer> set laststatus=2 ruler
 
 " use jq to format json files
-autocmd FileType json :silent %!jq .
+autocmd FileType json :silent %!jq --indent 4 .
+command Jq :silent %!jq .
 
 " set tmux tab + terminal tab to 'vim {full path}'
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
@@ -230,9 +261,6 @@ hi NormalColor guifg=Black guibg=White ctermbg=White ctermfg=Black
 hi InsertColor guifg=Black guibg=Green ctermbg=Green ctermfg=Black
 hi ReplaceColor guifg=Black guibg=Magenta ctermbg=Magenta ctermfg=Black
 hi VisualColor guifg=Black guibg=Orange ctermbg=Yellow ctermfg=Black
-
-" this "User1" is the %1 referenced in the status line
-hi User1 ctermfg=White ctermbg=8
 
 " Always show the status line
 " https://stackoverflow.com/a/5380230
