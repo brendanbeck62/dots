@@ -28,9 +28,11 @@ elif [[ "$CONTEXT" == "work" ]]; then
 fi
 
 
-ln -sf $DOTS/.vimrc ~/.vimrc
 mkdir -p ~/.vim/colors
+# for persistant editing history
+mkdir -p ~/.vim/undodir
 ln -sf $DOTS/.vim/colors/gruvbox.vim ~/.vim/colors/gruvbox.vim
+ln -sf $DOTS/.vimrc ~/.vimrc
 
 ln -sf $DOTS/.tmux.conf ~/.tmux.conf
 
