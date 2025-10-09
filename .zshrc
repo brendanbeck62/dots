@@ -16,6 +16,7 @@ fi
 
 path+=('/Users/brendan/src/scripts')
 path+=('/Users/brendan/.git')
+path+=('/Users/brendan/.local/bin')
 path+=('/Library/TeX/texbin')
 export PATH
 
