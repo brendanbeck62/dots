@@ -175,6 +175,7 @@ get_ip_address() {
             echo -e "${GREEN}[Done]${RESET}"
             return 0
         fi
+        echo "."
         sleep 4
     done
     echo -e "${RED}[Failed]${RESET}"
@@ -201,12 +202,18 @@ change_vm_hostname() {
 # Update SSH Config
 update_ssh_config() {
     echo -ne "${YELLOW}Updating SSH config...${RESET}"
-    ssh_config_entry="\nHost $new_hostname\n  HostName $ipv4_address\n  User "$SSH_USER"\n  IdentityFile ~/.ssh/main_ssh\n  StrictHostKeyChecking no\n"
+    ssh_config_entry="\nHost $new_hostname\n  HostName $ipv4_address\n  User "$SSH_USER"\n  IdentityFile ~/.ssh/utm-ssh\n  StrictHostKeyChecking no\n"
     if grep -q "^Host $new_hostname$" ~/.ssh/config; then
         sed -i '' "/^Host $new_hostname$/,/^$/d" ~/.ssh/config
     fi
     echo -e "$ssh_config_entry" >> ~/.ssh/config
     echo -e "${GREEN}[Done]${RESET}"
+}
+
+reboot() {
+    echo -ne "${YELLOW}Rebooting now...${RESET}"
+    ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -tt "$SSH_USER@$ipv4_address" "sudo reboot now"
+
 }
 
 # Main Execution Flow
@@ -218,6 +225,7 @@ randomize_mac
 start_vm
 get_ip_address
 change_vm_hostname
+reboot
 #update_ssh_config
 
 # Final Summary
