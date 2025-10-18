@@ -117,5 +117,18 @@ export PYENV_ROOT="$HOME/.pyenv"
 eval "$(pyenv init - )" # enables shims and shell integration
 eval "$(pyenv init - zsh)"
 
+
+## manage python on macos with pyenv (`pyenv install 3.13 && pyenv global 3.13`)
+#export PYENV_ROOT="$HOME/.pyenv"
+#[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+#eval "$(pyenv init --path)"
+#eval "$(pyenv init - zsh)"
+
+##python virtualenvwrapper setup (after pyenv global 3.13, run pip install mkvirtualenv)
+#export VIRTUALENVWRAPPER_PYTHON="$(pyenv which python)"
+#export VIRTUALENVWRAPPER_VIRTUALENV="$(pyenv which virtualenv)"  # Point to `virtualenv`
+#export WORKON_HOME="$HOME/.virtualenvs"
+#source $(pyenv which virtualenvwrapper.sh)
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
