@@ -16,6 +16,7 @@ if [[ "$CONTEXT" == "home" ]]; then
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         ln -sf $DOTS/.zshrc ~/.zshrc
         ln -sf $DOTS/.zprofile ~/.zprofile
+        touch ~/.hushlogin
     fi
 
 elif [[ "$CONTEXT" == "work" ]]; then
