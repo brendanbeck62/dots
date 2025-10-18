@@ -48,9 +48,15 @@ else
     compinit -C
 fi
 
-source <(limactl completion zsh)
-source <(colima completion zsh)
-source <(kind completion zsh)
+if command -v limactl >/dev/null 2>&1; then
+    source <(limactl completion zsh)
+fi
+if command -v colima >/dev/null 2>&1; then
+    source <(colima completion zsh)
+fi
+if command -v kind >/dev/null 2>&1; then
+    source <(kind completion zsh)
+fi
 
 # User configuration
 alias ls='eza --icons --group-directories-first --ignore-glob=".DS_Store"'
@@ -105,14 +111,11 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 # for ghostty .config/ghostty/config
 export XDG_CONFIG_HOME="$HOME/.config"
 
-#python virtualenvwrapper setup
-# if upgrading python version and get "(ModuleNotFoundError: No module named 'virtualenvwrapper')"
-# run `pip3 install virtualenvwrapper --break-system-packages`
-# python is installed from python.org, not using brew
-export WORKON_HOME=~/.py-envs
-export VIRTUALENVWRAPPER_PYTHON=`which python3`
-export VIRTUALENVWRAPPER_VIRTUALENV=`which virtualenv`
-source ~/.py-envs/default_env/bin/virtualenvwrapper.sh
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+#eval "$(pyenv init --path)" #just enables shims without shell integration
+eval "$(pyenv init - )" # enables shims and shell integration
+eval "$(pyenv init - zsh)"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
