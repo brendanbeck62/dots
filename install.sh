@@ -49,5 +49,6 @@ then
     git config --global branch.sort -committerdate
     git config --global column.ui auto
     git config --global column.status never
+    git config --global diff.tool vimdiff
 fi
 
