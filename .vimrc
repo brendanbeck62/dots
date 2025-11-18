@@ -22,6 +22,8 @@ set encoding=utf-8
 
 let mapleader = " " " set the leader to <space>
 set autoread        " reload files that have not been modified
+set updatetime=1000
+autocmd FocusGained * checktime
 set history=500     " command history
 set hidden          " Allow buffers to be backgrounded without being saved
 set number          " use line numbers
@@ -244,8 +246,19 @@ autocmd  FileType fzf set laststatus=0 noshowmode noruler
   \| autocmd BufLeave <buffer> set laststatus=2 ruler
 
 " use jq to format json files
-autocmd FileType json :silent %!jq --indent 4 .
-command Jq :silent %!jq .
+" autocmd FileType json :silent %!jq --indent 4 .
+" command Jq :silent %!jq .
+function! FormatJsonWithConfirm()
+  if confirm('Format this JSON file?', "&Yes\n&No") == 1
+    silent %!jq --indent 4 .
+  endif
+endfunction
+
+autocmd FileType json :call FormatJsonWithConfirm()
+command Jq :call FormatJsonWithConfirm()
+
+" turn off paste when leaving insert mode after pasteing
+autocmd InsertLeave * if &paste | set nopaste | echo "Paste mode disabled" | endif
 
 " set tmux tab + terminal tab to 'vim {full path}'
 autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))

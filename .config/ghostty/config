@@ -6,8 +6,6 @@ theme = Gruvbox Dark Hard
 #font-family-italic = MesloLGS NF Italic
 #font-family-bold-italic = MesloLGS NF Bold Italic
 
-keybind = global:alt+space=toggle_quick_terminal
-
 copy-on-select = clipboard
 macos-titlebar-style = tabs
 shell-integration-features = no-cursor

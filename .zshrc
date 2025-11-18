@@ -12,11 +12,7 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
 fi
 
 # Append directories to path
-#TODO
-
-path+=('/Users/brendan/src/scripts')
-path+=('/Users/brendan/.git')
-path+=('/Users/brendan/.local/bin')
+path+=('/Users/brendan/dots/scripts')
 path+=('/Library/TeX/texbin')
 export PATH
 
