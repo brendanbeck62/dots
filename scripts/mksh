@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -e
+set -u
+set -o pipefail
+
+path="$HOME/dots/scripts/$1"
+
+if [ ! $# -eq 1 ]; then
+  echo 'mksh takes one argument' 1>&2
+  exit 1
+elif [ -e $path ]; then
+  echo "$path already exists" 1>&2
+  exit 1
+fi
+
+echo '#!/usr/bin/env bash
+set -e
+set -u
+set -o pipefail
+
+' > "$path"
+
+chmod u+x "$path"
+
+"$EDITOR" "$path"
