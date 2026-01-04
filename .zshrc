@@ -16,13 +16,14 @@ path+=('/Users/brendan/dots/scripts')
 path+=('/Library/TeX/texbin')
 export PATH
 
+export EDITOR="vim"
+
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
 ENABLE_CORRECTION="false"
-EDITOR="vim"
 
 plugins=(
   git
@@ -107,18 +108,12 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 # for ghostty .config/ghostty/config
 export XDG_CONFIG_HOME="$HOME/.config"
 
+## manage python on macos with pyenv (`pyenv install 3.13 && pyenv global 3.13`)
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 #eval "$(pyenv init --path)" #just enables shims without shell integration
 eval "$(pyenv init - )" # enables shims and shell integration
 eval "$(pyenv init - zsh)"
-
-
-## manage python on macos with pyenv (`pyenv install 3.13 && pyenv global 3.13`)
-#export PYENV_ROOT="$HOME/.pyenv"
-#[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-#eval "$(pyenv init --path)"
-#eval "$(pyenv init - zsh)"
 
 ##python virtualenvwrapper setup (after pyenv global 3.13, run pip install mkvirtualenv)
 #export VIRTUALENVWRAPPER_PYTHON="$(pyenv which python)"
