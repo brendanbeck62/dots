@@ -1,12 +1,19 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+
+export PATH="$PATH:$HOME/.local/bin"
+
+
 # don't put duplicate lines in the history. See bash(1) for more options
 #  ... or force ignoredups and ignorespace
 HISTCONTROL=ignoredups:ignorespace
 
 # append to the history file, don't overwrite it
 shopt -s histappend
+
+# disable ctrl+s pausing the terminal so can be used with ctrl+r history searching
+stty -ixon
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=1000
@@ -97,3 +104,5 @@ else
 fi
 export EDITOR=vim
 export BASH_SILENCE_DEPRECATION_WARNING=1
+
+[ -f ~/dots/.bash_kubectl ] && source ~/dots/.bash_kubectl
