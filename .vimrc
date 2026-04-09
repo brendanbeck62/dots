@@ -180,6 +180,7 @@ endif
 
 
 " Syntax highlight file associations
+au FileType go setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4
 au BufNewFile,BufRead Vagrantfile set filetype=ruby
 au BufNewFile,BufRead *.erb set filetype=eruby
 au BufNewFile,BufRead *.pp set filetype=puppet " syntax file located in ~/.vim/syntax/puppet.vim
