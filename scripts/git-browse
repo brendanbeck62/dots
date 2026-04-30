@@ -1,9 +1,9 @@
-#!/usr/bin/env zsh
-# vim: set ft=zsh :
+#!/usr/bin/env bash
+# vim: set ft=bash :
 
 # Open a Git remote in the browser
 
-function open_tool {
+open_tool() {
     if command -v xdg-open > /dev/null 2>&1; then
         echo 'xdg-open'
     elif command -v open > /dev/null 2>&1; then
@@ -13,24 +13,27 @@ function open_tool {
     fi
 }
 
-function parsed_remote {
-    local remote_info=$(git remote -v | grep -E "^$1\s.*\(fetch\)$")
-    local url=$(echo "$remote_info" | awk '{print $2}' | sed -E 's/.git$//')
+parsed_remote() {
+    local remote_info
+    remote_info=$(git remote -v | grep -E "^$1[[:space:]].*\(fetch\)$")
+    local url
+    url=$(echo "$remote_info" | awk '{print $2}' | sed -E 's/.git$//')
 
     echo "$url" | \
         sed -E 's#^git@#https://#' | \
         sed -E 's#^(https://.*):(.*)#\1/\2#'
 }
 
-
-function browse {
+browse() {
     if [[ -z "$1" ]]; then
         echo -e "warning: no remote name given. Using origin as default\n"
     fi
 
     local remote="${1:-origin}"
-    local tool="$(open_tool)"
-    local url="$(parsed_remote $remote)"
+    local tool
+    tool="$(open_tool)"
+    local url
+    url="$(parsed_remote "$remote")"
 
     if [[ -z "$tool" ]]; then
         echo "fatal: you must have either 'open' or 'xdg-open' installed"
@@ -42,8 +45,14 @@ function browse {
         return 1
     fi
 
+    local branch
+    branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+    if [[ -n "$branch" && "$branch" != "HEAD" ]]; then
+        url="$url/tree/$branch"
+    fi
+
     echo "Browsing to $url..."
-    eval "$tool $url" 2> /dev/null || echo "fatal: cannot browse to $url"
+    $tool "$url" 2> /dev/null || echo "fatal: cannot browse to $url"
 }
 
 browse "$@"
