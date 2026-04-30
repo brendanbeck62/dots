@@ -131,18 +131,21 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .git'
 # for ghostty .config/ghostty/config
 export XDG_CONFIG_HOME="$HOME/.config"
 
-## manage python on macos with pyenv (`pyenv install 3.13 && pyenv global 3.13`)
+# manage python on macos with pyenv (`pyenv install 3.13 && pyenv global 3.13`)
+    # lazy loaded
 export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-#eval "$(pyenv init --path)" #just enables shims without shell integration
-eval "$(pyenv init - )" # enables shims and shell integration
-eval "$(pyenv init - zsh)"
-
-##python virtualenvwrapper setup (after pyenv global 3.13, run pip install mkvirtualenv)
-#export VIRTUALENVWRAPPER_PYTHON="$(pyenv which python)"
-#export VIRTUALENVWRAPPER_VIRTUALENV="$(pyenv which virtualenv)"  # Point to `virtualenv`
-#export WORKON_HOME="$HOME/.virtualenvs"
-#source $(pyenv which virtualenvwrapper.sh)
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PATH:$PYENV_ROOT/bin"
+# Lazy-load pyenv - only initializes when first used
+_init_pyenv() {
+  unfunction _init_pyenv pyenv python python3 pip pip3 gimme-aws-creds 2>/dev/null
+  eval "$(command pyenv init --path)"
+  eval "$(command pyenv init - zsh)"
+}
+pyenv() { _init_pyenv; command pyenv "$@" }
+python() { _init_pyenv; command python "$@" }
+python3() { _init_pyenv; command python3 "$@" }
+pip() { _init_pyenv; command pip "$@" }
+pip3() { _init_pyenv; command pip3 "$@" }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
