@@ -149,3 +149,15 @@ pip3() { _init_pyenv; command pip3 "$@" }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# From ghostty shell integration:
+#    This is an autoloadable function. It's invoked automatically in shells directly spawned by Ghostty but not in any other
+#    shells. For example, running exec zsh, sudo -E zsh, tmux, or plain zsh will create a shell where ghostty-integration
+#    won't automatically run. Zsh users who want integration with Ghostty in all shells should add the following lines to
+#    their .zshrc
+#
+# Basically, tmux is no longer ghostty, because $TERM = tmux-256color. so load it as if it was ghostty
+if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+  source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+fi
+
