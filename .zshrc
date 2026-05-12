@@ -73,6 +73,16 @@ function catall() {
     find $dir -type f | xargs tail -n +1
 }
 
+# jump to the top of the output. requires my patched mdless
+mdless() {
+    command mdless "$@"
+    if [[ -n "$TMUX" ]]; then
+        tmux copy-mode
+        tmux send-keys -X previous-prompt -o
+    fi
+}
+
+
 # zsh doesnt come with watch installed. Don't pipe, just run
     # watch kubectl exec ...
 watch () {
