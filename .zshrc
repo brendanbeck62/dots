@@ -113,9 +113,33 @@ watch () {
 alias dkclean='docker rm $(docker ps --filter status=exited -q) && docker rmi -f $(docker images -f "dangling=true" -q)'
 alias gs='git status'
 alias gcm='git commit -m'
-alias cat='bat $@'
 alias tfs='terraform show'
 alias rg='rg --ignore-case'
+
+# Always print to the terminal (not a pager) and disable mdless's TTY::Spinner so
+# its clear-line escape doesn't wipe Ghostty's OSC 133;C marker on the
+# output-start line. Then, inside tmux, jump to the first line of the output.
+mdless() {
+    command mdless "$@"
+    if [[ -n "$TMUX" ]]; then
+        tmux copy-mode
+        tmux send-keys -X previous-prompt -o
+    fi
+}
+
+cat() {
+  for arg in "$@"; do
+    case "$arg" in
+      *.md|*.MD|*.markdown)
+        mdless "$@"
+        ;;
+      *)
+        command bat -p --theme=gruvbox-dark "$arg"
+        ;;
+    esac
+  done
+}
+
 
 alias lsjdk='/usr/libexec/java_home -V'
 function setjdk() {
