@@ -1,28 +1,25 @@
 #fastfetch
+
+#zmodload zsh/zprof
+#run zprof either at the end of the zshrc or in the prompt
+
 # speed up oh-my-zsh
 DISABLE_AUTO_UPDATE="true"
 DISABLE_MAGIC_FUNCTIONS="true"
-DISABLE_COMPFIX="true"
+ZSH_DISABLE_COMPFIX="true"
+DISABLE_LS_COLORS="true"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+POWERLEVEL9K_INSTANT_PROMPT=on
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Append directories to path
-path+=('/Users/brendan/dots/scripts')
-path+=('/Library/TeX/texbin')
-export PATH
-
-export EDITOR="vim"
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
-
 ZSH_THEME="powerlevel10k/powerlevel10k"
-
 ENABLE_CORRECTION="false"
 
 plugins=(
@@ -33,33 +30,80 @@ plugins=(
   docker docker-compose
   kubectl
 )
-
 source $ZSH/oh-my-zsh.sh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
+# use vim readline
+#bindkey -v
+
+# separate historys in each tab of iterm
+unsetopt inc_append_history
+unsetopt share_history
+
+# remove duplicates from history
+setopt HIST_FIND_NO_DUPS
+
 # only compute the cache once a day, rather than every new shell
-autoload -Uz compinit
-if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
-    compinit
-else
-    compinit -C
-fi
+#autoload -Uz compinit
+#if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+#    compinit
+#else
+#    compinit -C
+#fi
 
-if command -v limactl >/dev/null 2>&1; then
-    source <(limactl completion zsh)
-fi
-if command -v colima >/dev/null 2>&1; then
-    source <(colima completion zsh)
-fi
-if command -v kind >/dev/null 2>&1; then
-    source <(kind completion zsh)
-fi
+#source <(limactl completion zsh)
+#source <(colima completion zsh)
+#source <(kind completion zsh)
+for cmd in limactl colima kind; do
+  cache="$HOME/.zsh_completions/_$cmd"
+  [[ -d "${cache%/*}" ]] || mkdir -p "${cache%/*}"
+  [[ ! -f "$cache" ]] && $cmd completion zsh > "$cache" 2>/dev/null
+done
+fpath=(~/.zsh_completions $fpath)
 
-# User configuration
-alias ls='eza --icons --group-directories-first --ignore-glob=".DS_Store"'
-alias ll='eza -la --icons --group-directories-first --ignore-glob=".DS_Store"'
 # Override the coloring for Dockerfiles to include anything containing Dockerfile
 export EXA_COLORS="*Dockerfile*=1;4;33:*Jenkinsfile*=1;4;33:*jenkinsfile*=1;4;33"
+
+#########################
+# Aliases
+#########################
+alias ls='eza --icons --group-directories-first --ignore-glob=".DS_Store"'
+alias ll='eza -la --icons --group-directories-first --ignore-glob=".DS_Store"'
+alias lt='eza -la --icons --group-directories-first --tree --level=3 --ignore-glob=".git"'
+
+# Always print to the terminal (not a pager) and disable mdless's TTY::Spinner so
+# its clear-line escape doesn't wipe Ghostty's OSC 133;C marker on the
+# output-start line. Then, inside tmux, jump to the first line of the output.
+mdless() {
+    command mdless "$@"
+    if [[ -n "$TMUX" ]]; then
+        tmux copy-mode
+        tmux send-keys -X previous-prompt -o
+    fi
+}
+
+cat() {
+  for arg in "$@"; do
+    case "$arg" in
+      *.md|*.MD|*.markdown)
+        mdless "$@"
+        ;;
+      *)
+        command bat -p --theme=gruvbox-dark "$arg"
+        ;;
+    esac
+  done
+}
+
+alias dkclean='docker rm $(docker ps --filter status=exited -q) && docker rmi -f $(docker images -f "dangling=true" -q)'
+alias gs='git status'
+alias gcm='git commit -m'
+alias tfs='terraform show'
+alias rg='rg --ignore-case'
+
+alias docker-images='docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.CreatedSince}}\t{{.Size}}"'
+# names only in a dir
+# rg --json "rest_client_requests_total" | jq -s '(.[] | select(.type == "match").data) | "\(.path.text):\(.line_number)"'
 
 function cdroot() {
   if $(git rev-parse --is-inside-work-tree > /dev/null 2>&1); then
@@ -71,15 +115,6 @@ function cdroot() {
 function catall() {
     dir=${1:-./}
     find $dir -type f | xargs tail -n +1
-}
-
-# jump to the top of the output. requires my patched mdless
-mdless() {
-    command mdless "$@"
-    if [[ -n "$TMUX" ]]; then
-        tmux copy-mode
-        tmux send-keys -X previous-prompt -o
-    fi
 }
 
 
@@ -107,54 +142,18 @@ watch () {
     done
 }
 
-#########################
-# Aliases
-#########################
-alias dkclean='docker rm $(docker ps --filter status=exited -q) && docker rmi -f $(docker images -f "dangling=true" -q)'
-alias gs='git status'
-alias gcm='git commit -m'
-alias tfs='terraform show'
-alias rg='rg --ignore-case'
+# https://github.com/awcjack/tmux-kube-context
+source ~/.tmux/plugins/tmux-kube-context/scripts/shell-init.zsh
 
-# Always print to the terminal (not a pager) and disable mdless's TTY::Spinner so
-# its clear-line escape doesn't wipe Ghostty's OSC 133;C marker on the
-# output-start line. Then, inside tmux, jump to the first line of the output.
-mdless() {
-    command mdless "$@"
-    if [[ -n "$TMUX" ]]; then
-        tmux copy-mode
-        tmux send-keys -X previous-prompt -o
+kubectl() {
+
+    if [[ "$1" == "config" && "$2" == "use-context" && -n "$3" ]]; then
+        ~/src/scripts/kube-use-context.sh "$3"
+    else
+        command kubectl "$@"
     fi
 }
 
-cat() {
-  for arg in "$@"; do
-    case "$arg" in
-      *.md|*.MD|*.markdown)
-        mdless "$@"
-        ;;
-      *)
-        command bat -p --theme=gruvbox-dark "$arg"
-        ;;
-    esac
-  done
-}
-
-
-alias lsjdk='/usr/libexec/java_home -V'
-function setjdk() {
-  export JAVA_HOME=`/usr/libexec/java_home -v $1`
-}
-
-# separate historys in each tab of iterm
-unsetopt inc_append_history
-unsetopt share_history
-
-# remove duplicates from history
-setopt HIST_FIND_NO_DUPS
-
-# jira-cli
-export JIRA_AUTH_TYPE=bearer
 
 # fzf
 source <(fzf --zsh)
@@ -181,6 +180,11 @@ python3() { _init_pyenv; command python3 "$@" }
 pip() { _init_pyenv; command pip "$@" }
 pip3() { _init_pyenv; command pip3 "$@" }
 
+# Auto-start a new tmux session for each Ghostty tab/window
+if [[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -z "$TMUX" ]]; then
+  exec tmux new-session
+fi
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -194,4 +198,3 @@ pip3() { _init_pyenv; command pip3 "$@" }
 if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
   source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
 fi
-
