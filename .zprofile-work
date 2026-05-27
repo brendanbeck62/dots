@@ -1,0 +1,24 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# Avoid duplicate paths
+append_to_path() {
+    local dir
+    for dir in "$@"; do
+        if [[ ":$PATH:" != *":${dir}:"* ]]; then
+            PATH="$PATH:${dir}"
+        fi
+    done
+}
+
+append_to_path \
+    "/Users/BBec23/src/brendanbeck62/dots/scripts" \
+    "/Users/BBec23/src/scripts" \
+    "/Users/BBec23/src/zookeepers-toolkit" \
+    "/Users/BBec23/.local/bin" \
+    "/Users/BBec23/bin" \
+    "/Users/BBec23/go/bin" \
+    "/Users/BBec23/.krew/bin"
+export PATH
+
+export EDITOR="vim"
+
