@@ -7,11 +7,11 @@
 "    -> General
 "    -> Hotkeys
 "    -> Colors and Fonts
-"    -> Configurations
+"    -> Functions
+"    -> Configuration
 "    -> Statusline
 "
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => General
@@ -23,15 +23,14 @@ set encoding=utf-8
 let mapleader = " " " set the leader to <space>
 set autoread        " reload files that have not been modified
 set updatetime=1000
-autocmd FocusGained * checktime
-set history=500     " command history
+set history=10000   " command history
 set hidden          " Allow buffers to be backgrounded without being saved
 set number          " use line numbers
 set rnu             " relative line numbers
 set ruler           " show the line number and column in status bar
 set mouse=a         " mouse scrolling
 set ttymouse=sgr    " removes the legacy 223 character buffer limit
-set scrolloff=15    " how many lines to keep on screen when scrolling up
+set scrolloff=8     " how many lines to keep on screen when scrolling up
 set list            " show hidden characters
 set listchars=tab:▸\ ,trail:·
 set nowrap          " don't wrap newlines
@@ -78,12 +77,31 @@ set wildignore+=*.swp           " Ignore vim backups
 " Change directory to the current buffer when opening files.
 "set autochdir
 
-" add vim to the RunTimePath
-set rtp+=/opt/homebrew/opt/fzf
+" add vim to the RunTimePath - guard for non-Apple-Silicon systems
+if isdirectory('/opt/homebrew/opt/fzf')
+    set rtp+=/opt/homebrew/opt/fzf
+elseif isdirectory('/usr/local/opt/fzf')
+    set rtp+=/usr/local/opt/fzf
+endif
 
 if &diff
     set noreadonly
 endif
+
+" Force bracketed paste — Vim doesn't auto-enable it for tmux-256color
+if !has('gui_running')
+    " sent on Vim startup to tell the terminal please wrap pastes in markers.
+    let &t_BE = "\<Esc>[?2004h"
+
+    " sent on Vim exit to turn it off (so your shell goes back to normal behavior).
+    let &t_BD = "\<Esc>[?2004l"
+
+    " the start/end markers Vim watches for in incoming input.
+    " When it sees t_PS, it knows the next bytes until t_PE are a paste - don't run mappings/indent on them.
+    exec "set t_PS=\<Esc>[200~"
+    exec "set t_PE=\<Esc>[201~"
+endif
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Hotkeys
@@ -106,18 +124,24 @@ nnoremap <leader>n :nohlsearch<cr>
 vnoremap <leader>n :nohlsearch<cr>
 
 " move up/down visual lines instead of logical lines
-nnoremap j gj
-nnoremap k gk
+" use <expr> so counts (e.g. 5j) still jump logical lines - important with rnu
+nnoremap <expr> j v:count ? 'j' : 'gj'
+nnoremap <expr> k v:count ? 'k' : 'gk'
 
 " Insert line above cursor and move cursor to that line at correct indent while staying in insert mode
 inoremap <silent><c-o> <esc>O
 
 " Buffer management
+" NOTE: inline `" comments` after :map RHS get mapped as keystrokes, so keep comments above
 nnoremap <Leader><Tab> :buffer<space><Tab>
-nnoremap <left> :bp<cr>                 " buffer previous
-nnoremap <right> :bn<cr>                " buffer next
-nnoremap <leader>d :bd!<cr>              " buffer delete
-nnoremap <leader><leader> <c-^>         " toggle between last 2 buffers
+" buffer previous
+nnoremap <left> :bp<cr>
+" buffer next
+nnoremap <right> :bn<cr>
+" buffer delete
+nnoremap <leader>d :bd!<cr>
+" toggle between last 2 buffers
+nnoremap <leader><leader> <c-^>
 
 " no arrow keys for you! use left and right for buffer next/prev
 nnoremap <up> <nop>
@@ -150,7 +174,8 @@ vnoremap < <gv
 vnoremap > >gv
 
 " Command to write as root if we dont' have permission (thanks mitchellh)
-cmap w!! %!sudo tee > /dev/null %
+" cnoremap (not cmap) so it isn't recursively remapped; correct RHS uses `w !sudo ...`
+cnoremap w!! w !sudo tee > /dev/null %
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Colors and Fonts
@@ -179,35 +204,31 @@ endif
 "highlight DiffDelete term=reverse cterm=bold ctermbg=darkred ctermfg=black
 
 
-" Syntax highlight file associations
-au FileType go setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4
-au BufNewFile,BufRead Vagrantfile set filetype=ruby
-au BufNewFile,BufRead *.erb set filetype=eruby
-au BufNewFile,BufRead *.pp set filetype=puppet " syntax file located in ~/.vim/syntax/puppet.vim
-au BufNewFile,BufRead Jenkinsfile* set filetype=groovy
-au BufNewFile,BufRead *.tf,*.hcl,*.tfvars set filetype=hcl | set syntax=hcl
-au BufNewFile,BufRead *.tfstate set filetype=json
-
-" Fixes a problem with groovy syntax highlighting?
-set re=0
+" Syntax highlight file associations + groovy regex-engine fix (scoped, not global re=0)
+augroup vimrc_filetypes
+    autocmd!
+    autocmd FileType go setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4
+    autocmd BufNewFile,BufRead Vagrantfile set filetype=ruby
+    autocmd BufNewFile,BufRead *.erb set filetype=eruby
+    autocmd BufNewFile,BufRead *.pp set filetype=puppet " syntax file located in ~/.vim/syntax/puppet.vim
+    autocmd BufNewFile,BufRead Jenkinsfile* set filetype=groovy
+    autocmd BufNewFile,BufRead *.tf,*.hcl,*.tfvars set filetype=hcl | set syntax=hcl
+    autocmd BufNewFile,BufRead *.tfstate set filetype=json
+    " Fixes a problem with groovy syntax highlighting (was global `set re=0`)
+    autocmd FileType groovy setlocal regexpengine=0
+    autocmd FileType markdown setlocal foldlevel=99
+augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Function to toggle line numbers for copying text
-function CopyToggle()
-  set rnu!
-  set number!
+" Function to remove trailing whitespace (preserves cursor position)
+function! Trimws()
+  let l:pos = getpos('.')
+  keeppatterns %s/\s\+$//e
+  call setpos('.', l:pos)
 endfunction
-command Copy call CopyToggle()
-
-" Function to remove trailing whitespace
-function Trimws()
-  %s/\s\+$//e
-endfunction
-command Trim call Trimws()
-" trim on file write
-au BufWrite * :Trim
+command! Trim call Trimws()
 
 " convert jenkins object to pretty print
 function! PrettyPrintConfig()
@@ -222,12 +243,20 @@ function! PrettyPrintConfig()
 
   silent! %g/^\s*\w\+:/s/^\(\s*\)\(\w\+\):\s*/\1\2: /g
 endfunction
-
-" Map it to a command
 command! PrettyConfig call PrettyPrintConfig()
 
 " Remove every other line when newlines are created when pasting into vim
 command! CleanNewlines %s/\n\n\([^\n]\)/\r\1/g
+
+" use jq to format json files
+" autocmd FileType json :silent %!jq --indent 4 .
+" command Jq :silent %!jq .
+function! FormatJsonWithConfirm()
+  if confirm('Format this JSON file?', "&Yes\n&No") == 1
+    silent %!jq --indent 4 .
+  endif
+endfunction
+command! Jq call FormatJsonWithConfirm()
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Configuration
@@ -242,31 +271,48 @@ let g:netrw_winsize = 25 " percentage of screen
 let g:fzf_layout = { 'down':'~20%' }
 
 " remove statusline when fzf window is active
-autocmd! FileType fzf
-autocmd  FileType fzf set laststatus=0 noshowmode noruler
-  \| autocmd BufLeave <buffer> set laststatus=2 ruler
-
-" use jq to format json files
-" autocmd FileType json :silent %!jq --indent 4 .
-" command Jq :silent %!jq .
-function! FormatJsonWithConfirm()
-  if confirm('Format this JSON file?', "&Yes\n&No") == 1
-    silent %!jq --indent 4 .
-  endif
-endfunction
-
-autocmd FileType json :call FormatJsonWithConfirm()
-command Jq :call FormatJsonWithConfirm()
+augroup vimrc_fzf
+    autocmd!
+    autocmd FileType fzf set laststatus=0 noshowmode noruler
+        \| autocmd BufLeave <buffer> set laststatus=2 ruler
+augroup END
 
 " turn off paste when leaving insert mode after pasteing
-autocmd InsertLeave * if &paste | set nopaste | echo "Paste mode disabled" | endif
+"autocmd InsertLeave * if &paste | set nopaste | echo "Paste mode disabled" | endif
 
-" set tmux tab + terminal tab to 'vim {full path}'
-autocmd BufEnter * call system("tmux rename-window " . expand("%:t"))
-autocmd VimLeave * call system("tmux rename-window zsh")
-" for not in tmux
-autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
+" General autocmds - grouped so re-sourcing ~/.vimrc doesn't stack duplicates
+augroup vimrc_general
+    autocmd!
+    " use CursorHold too so updatetime actually matters for autoread
+    autocmd FocusGained,CursorHold,CursorHoldI * silent! checktime
+    " trim trailing whitespace on file write (skip filetypes where trailing ws is meaningful)
+    autocmd BufWritePre * if index(['markdown','diff','patch','mail'], &filetype) < 0 | call Trimws() | endif
+    " for not in tmux - window title
+    autocmd BufEnter * let &titlestring = ' ' . expand("%:t")
+augroup END
+
+" set tmux tab + terminal tab to 'vim {full path}' - only when inside tmux
+if !empty($TMUX)
+    augroup vimrc_tmux
+        autocmd!
+        autocmd BufEnter * call system("tmux rename-window " . shellescape(expand("%:t")))
+        autocmd VimLeave * call system("tmux rename-window zsh")
+    augroup END
+endif
+
 set title
+
+" Prompt to format JSON on initial read only (not every BufEnter into help/preview)
+augroup vimrc_json
+    autocmd!
+    autocmd BufReadPost *.json if &modifiable && !&readonly | call FormatJsonWithConfirm() | endif
+augroup END
+
+" folds
+" Markdown heading folding - $VIMRUNTIME/ftplugin/markdown.vim
+filetype plugin indent on
+let g:markdown_folding = 1
+
 
 """"""""""""""""""""""""""""""
 " => Status line
@@ -293,8 +339,8 @@ set statusline +=/%L            "total lines
 set statusline +=\ Col          " Col
 set statusline +=\ %v\          "virtual column number
 set statusline +=%*             " end color
-set statusline+=%#NormalColor#%{(mode()=='n')?'\ NORMAL\ ':''}
-set statusline+=%#InsertColor#%{(mode()=='i')?'\ INSERT\ ':''}
-set statusline+=%#ReplaceColor#%{(mode()=='R')?'\ RPLACE\ ':''}
-set statusline+=%#VisualColor#%{(mode()=='v')?'\ VISUAL\ ':''}
-" TODO: can't figure out what to match for visual block mode
+set statusline+=%#NormalColor#%{(mode()==#'n')?'\ NORMAL\ ':''}
+set statusline+=%#InsertColor#%{(mode()==#'i')?'\ INSERT\ ':''}
+set statusline+=%#ReplaceColor#%{(mode()==#'R')?'\ RPLACE\ ':''}
+" mode() returns 'v','V', or <C-V> (\x16) for visual variants - matches all three
+set statusline+=%#VisualColor#%{(mode()=~#'\v^[vV\x16]$')?'\ VISUAL\ ':''}
