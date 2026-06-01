@@ -22,7 +22,7 @@ set encoding=utf-8
 
 let mapleader = " " " set the leader to <space>
 set autoread        " reload files that have not been modified
-set updatetime=1000
+set updatetime=200
 set history=10000   " command history
 set hidden          " Allow buffers to be backgrounded without being saved
 set number          " use line numbers
@@ -219,6 +219,9 @@ augroup vimrc_filetypes
     autocmd FileType markdown setlocal foldlevel=99
 augroup END
 
+" highlight codeblocks in markdown (requires filetype plugin on)
+let g:markdown_fenced_languages = ['python', 'bash=sh', 'javascript', 'json', 'html', 'css', 'terraform=hcl', 'vim']
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Functions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -284,7 +287,7 @@ augroup END
 augroup vimrc_general
     autocmd!
     " use CursorHold too so updatetime actually matters for autoread
-    autocmd FocusGained,CursorHold,CursorHoldI * silent! checktime
+    autocmd FocusGained,CursorHold,CursorHoldI,BufEnter * silent! checktime
     " trim trailing whitespace on file write (skip filetypes where trailing ws is meaningful)
     autocmd BufWritePre * if index(['markdown','diff','patch','mail'], &filetype) < 0 | call Trimws() | endif
     " for not in tmux - window title
@@ -312,7 +315,6 @@ augroup END
 " Markdown heading folding - $VIMRUNTIME/ftplugin/markdown.vim
 filetype plugin indent on
 let g:markdown_folding = 1
-
 
 """"""""""""""""""""""""""""""
 " => Status line
