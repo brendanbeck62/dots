@@ -11,6 +11,7 @@ append_to_path() {
 }
 
 append_to_path \
+    "$HOME/.local/bin" \
     "$HOME/dots/scripts" \
     "/Library/Tex/textbin"
 export PATH

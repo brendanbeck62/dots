@@ -12,7 +12,14 @@ DISABLE_LS_COLORS="true"
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-POWERLEVEL9K_INSTANT_PROMPT=on
+# Disable instant prompt in Ghostty tabs that will immediately hand off to tmux —
+# instant prompt's fd capture prevents tmux from detecting its terminal as a child process.
+# Inside tmux panes ($TMUX is set) or non-Ghostty shells, instant prompt works normally.
+if [[ "$TERM_PROGRAM" == "ghostty" && -z "$TMUX" ]]; then
+  POWERLEVEL9K_INSTANT_PROMPT=off
+else
+  POWERLEVEL9K_INSTANT_PROMPT=on
+fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
@@ -180,13 +187,32 @@ python3() { _init_pyenv; command python3 "$@" }
 pip() { _init_pyenv; command pip "$@" }
 pip3() { _init_pyenv; command pip3 "$@" }
 
-# Auto-start a new tmux session for each Ghostty tab/window
-if [[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -z "$TMUX" ]]; then
-  exec tmux new-session
-fi
+# Bypass local tmux when SSHing so remote tmux sessions work cleanly.
+# Kills local tmux and defers the ssh command to the parent zsh.
+ssh() {
+  if [[ -n "$TMUX" && -n "$_GHOSTTY_ZSH_PID" ]]; then
+    echo "$*" > "${TMPDIR:-/tmp}/.ghostty-ssh-${_GHOSTTY_ZSH_PID}"
+    tmux kill-session
+    return
+  fi
+  command ssh "$@"
+}
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Auto-start a new tmux session for each Ghostty tab/window.
+if [[ "$TERM_PROGRAM" == "ghostty" ]] && [[ -z "$TMUX" ]]; then
+  export _GHOSTTY_ZSH_PID=$$
+  tmux new-session
+  _ghostty_ssh_file="${TMPDIR:-/tmp}/.ghostty-ssh-${_GHOSTTY_ZSH_PID}"
+  if [[ -f "$_ghostty_ssh_file" ]]; then
+    _ghostty_ssh_args=$(cat "$_ghostty_ssh_file")
+    rm -f "$_ghostty_ssh_file"
+    command ssh ${(z)_ghostty_ssh_args}
+  fi
+  unset _ghostty_ssh_file _ghostty_ssh_args
+fi
 
 # From ghostty shell integration:
 #    This is an autoloadable function. It's invoked automatically in shells directly spawned by Ghostty but not in any other
