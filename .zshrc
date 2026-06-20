@@ -149,8 +149,10 @@ watch () {
     done
 }
 
-# https://github.com/awcjack/tmux-kube-context
-source ~/.tmux/plugins/tmux-kube-context/scripts/shell-init.zsh
+# https://github.com/brendanbeck62/tmux-kube-context
+if [ -d "~/.tmux/plugins/tmux-kube-context" ]; then
+    source ~/.tmux/plugins/tmux-kube-context/scripts/shell-init.zsh
+fi
 
 kubectl() {
 
