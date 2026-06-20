@@ -3,6 +3,7 @@
 
 
 export PATH="$PATH:$HOME/.local/bin"
+export PATH=/home/b/.opencode/bin:$PATH
 
 
 # don't put duplicate lines in the history. See bash(1) for more options
@@ -106,3 +107,8 @@ export EDITOR=vim
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
 [ -f ~/dots/.bash_kubectl ] && source ~/dots/.bash_kubectl
+
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
