@@ -220,7 +220,10 @@ augroup vimrc_filetypes
 augroup END
 
 " highlight codeblocks in markdown (requires filetype plugin on)
-let g:markdown_fenced_languages = ['python', 'bash=sh', 'javascript', 'json', 'html', 'css', 'terraform=hcl', 'vim']
+let g:markdown_fenced_languages = ['python', 'bash=sh', 'javascript', 'json', 'html', 'css', 'vim']
+if !empty(globpath(&runtimepath, 'syntax/hcl.vim'))
+    call add(g:markdown_fenced_languages, 'terraform=hcl')
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Functions
