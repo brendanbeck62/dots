@@ -61,6 +61,8 @@ fi
 #########
 # GIT
 #########
+ln -sf $DOTS/.config/gh ~/.config/gh
+
 if command -v git >/dev/null 2>&1
 then
     git config --global user.email "brendan.beck62@gmail.com"
